@@ -2,41 +2,42 @@ import { Column, Columns, Title } from "bloomer";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Link from "next/link";
 import Biography from "../../../components/Biography";
+import {
+  PostDetailPageData,
+  PostDetailPageStaticPathType
+} from "../../../components/interface";
 import Layout from "../../../components/layout";
-import { getAllPostIds, getPostData } from "../../../lib/markdown_posts";
+import { getAllPostIds, getPostData } from "../../../lib/contentful_posts";
 
 export default function Post({
-  postData,
+  postDetail,
 }: {
-  postData: {
-    year: string;
-    month: string;
-    day: string;
-    title: string;
-    date: string;
-    description: string;
-    contentHtml: string;
-    prevPost: any;
-    nextPost: any;
-  };
+  postDetail: PostDetailPageData;
 }) {
+  const postDate = new Date(postDetail.date);
+  const formatDate = `${postDate.getFullYear()}/${
+    postDate.getMonth() + 1
+  }/${postDate.getDate()} ${postDate.getHours()}:${postDate.getMinutes()}`;
   return (
-    <Layout metaTitle={postData.title} metaDescription={postData.description}>
+    <Layout
+      metaTitle={postDetail.title}
+      metaDescription={postDetail.description}
+    >
       <article>
         <header>
           <Columns isMobile>
             <Column isSize={7}>
-              <Title isSize={5}>{postData.title}</Title>
+              <Title isSize={5}>{postDetail.title}</Title>
             </Column>
             <Column isSize={5}>
               <Title isSize={6} style={{ textAlign: "right" }}>
-                {postData.date}
+                {formatDate}
               </Title>
             </Column>
           </Columns>
         </header>
         <hr style={{ marginBottom: "15px" }} />
-        <section dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
+        <section dangerouslySetInnerHTML={{ __html: postDetail.contentHtml }} />
         <hr style={{ marginTop: "15px" }} />
         <footer>
           <Biography />
@@ -53,16 +54,22 @@ export default function Post({
           }}
         >
           <li>
-            {postData.prevPost && (
-              <Link href="/[year]/[month]/[day]" as={`/${postData.prevPost.year}/${postData.prevPost.month}/${postData.prevPost.day}`}>
-                <a>← {postData.prevPost.title}</a>
+            {postDetail.prevPost && (
+              <Link
+                href="/[year]/[month]/[day]"
+                as={`/${postDetail.prevPost.year}/${postDetail.prevPost.month}/${postDetail.prevPost.day}`}
+              >
+                <a>← {postDetail.prevPost.title}</a>
               </Link>
             )}
           </li>
           <li>
-            {postData.nextPost && (
-              <Link href="/[year]/[month]/[day]" as={`/${postData.nextPost.year}/${postData.nextPost.month}/${postData.nextPost.day}`}>
-                <a>{postData.nextPost.title} →</a>
+            {postDetail.nextPost && (
+              <Link
+                href="/[year]/[month]/[day]"
+                as={`/${postDetail.nextPost.year}/${postDetail.nextPost.month}/${postDetail.nextPost.day}`}
+              >
+                <a>{postDetail.nextPost.title} →</a>
               </Link>
             )}
           </li>
@@ -74,7 +81,7 @@ export default function Post({
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const paths = getAllPostIds();
+  const paths: PostDetailPageStaticPathType = await getAllPostIds();
   return {
     paths,
     fallback: false,
@@ -82,14 +89,14 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const postData = await getPostData(
-    params.year as string,
-    params.month as string,
-    params.day as string
+  const postDetail: PostDetailPageData = await getPostData(
+    parseInt(params.year as string),
+    parseInt(params.month as string),
+    parseInt(params.day as string)
   );
   return {
     props: {
-      postData,
+      postDetail: JSON.parse(JSON.stringify(postDetail)),
     },
   };
 };
