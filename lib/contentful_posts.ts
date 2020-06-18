@@ -13,7 +13,7 @@ export async function getSortedPostsData(): Promise<Post[]> {
     space: process.env.SPACE_ID,
     accessToken: process.env.ACCESS_TOKEN,
   };
-  if (process.env.ACCESS_TOKEN) {
+  if (process.env.USE_PREVIEW == "1") {
     Object.assign(clientOption, { host: "preview.contentful.com" });
   }
   const client: ContentfulClientApi = require("contentful").createClient(
