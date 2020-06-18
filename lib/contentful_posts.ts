@@ -9,10 +9,16 @@ import {
 } from "../components/interface";
 
 export async function getSortedPostsData(): Promise<Post[]> {
-  const client: ContentfulClientApi = require("contentful").createClient({
+  let clientOption = {
     space: process.env.SPACE_ID,
-    accessToken: process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN,
-  });
+    accessToken: process.env.ACCESS_TOKEN,
+  };
+  if (process.env.ACCESS_TOKEN) {
+    Object.assign(clientOption, { host: "preview.contentful.com" });
+  }
+  const client: ContentfulClientApi = require("contentful").createClient(
+    clientOption
+  );
 
   const entries = await client.getEntries<ContentfulPostContentModel>({
     content_type: "post",
