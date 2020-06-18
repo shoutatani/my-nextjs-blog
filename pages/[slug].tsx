@@ -1,13 +1,13 @@
 import { Column, Columns, Title } from "bloomer";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Link from "next/link";
-import Biography from "../../../components/Biography";
+import Biography from "../components/Biography";
 import {
   PostDetailPageData,
   PostDetailPageStaticPathType
-} from "../../../components/interface";
-import Layout from "../../../components/layout";
-import { getAllPostIds, getPostData } from "../../../lib/contentful_posts";
+} from "../components/interface";
+import Layout from "../components/layout";
+import { getAllPostIds, getPostData } from "../lib/contentful_posts";
 
 export default function Post({
   postDetail,
@@ -55,20 +55,14 @@ export default function Post({
         >
           <li>
             {postDetail.prevPost && (
-              <Link
-                href="/[year]/[month]/[day]"
-                as={`/${postDetail.prevPost.year}/${postDetail.prevPost.month}/${postDetail.prevPost.day}`}
-              >
+              <Link href="/[slug]" as={`/${postDetail.prevPost.slug}`}>
                 <a>← {postDetail.prevPost.title}</a>
               </Link>
             )}
           </li>
           <li>
             {postDetail.nextPost && (
-              <Link
-                href="/[year]/[month]/[day]"
-                as={`/${postDetail.nextPost.year}/${postDetail.nextPost.month}/${postDetail.nextPost.day}`}
-              >
+              <Link href="/[slug]" as={`/${postDetail.nextPost.slug}`}>
                 <a>{postDetail.nextPost.title} →</a>
               </Link>
             )}
@@ -90,9 +84,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const postDetail: PostDetailPageData = await getPostData(
-    parseInt(params.year as string),
-    parseInt(params.month as string),
-    parseInt(params.day as string)
+    params.slug as string
   );
   return {
     props: {

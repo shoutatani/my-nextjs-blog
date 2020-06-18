@@ -19,17 +19,13 @@ export default function Home({ posts }: { posts: PostIndexPageData }) {
   return (
     <Layout isHome>
       <Biography />
-      {posts.map(({ year, month, day, date, title, description }) => {
+      {posts.map(({ date, title, description, slug }) => {
         const postDate: Date = new Date(date);
         const formatDate = `${postDate.getFullYear()}/${
           postDate.getMonth() + 1
         }/${postDate.getDate()} ${postDate.getHours()}:${postDate.getMinutes()}`;
         return (
-          <Link
-            href="/[year]/[month]/[day]"
-            as={`/${year}/${month}/${day}`}
-            key={`${year}${month}${day}`}
-          >
+          <Link href={`/${slug}`} key={`${slug}`}>
             <a className="box">
               <article>
                 <header>

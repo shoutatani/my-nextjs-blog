@@ -2,16 +2,15 @@ import { EntryFields } from "contentful";
 
 export interface ContentfulPostContentModel {
   title: EntryFields.Text;
+  slug: EntryFields.Text;
   date: EntryFields.Date;
   description: EntryFields.Text;
   content: EntryFields.Text;
 }
 
 export interface Post {
-  year: number;
-  month: number;
-  day: number;
   title: string;
+  slug: string;
   date: Date;
   description: string;
   contentHtml: string;
@@ -25,5 +24,5 @@ export interface PostDetailPageData extends Post {
 }
 
 export type PostDetailPageStaticPathType = {
-  params: { year: string; month: string; day: string };
+  params: { slug: string };
 }[];

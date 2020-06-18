@@ -17,9 +17,10 @@ export async function getSortedPostsData(): Promise<Post[]> {
   const entries = await client.getEntries<ContentfulPostContentModel>({
     content_type: "post",
   });
-  const allPostsData: Post[] = await Promise.all(
+  const posts: Post[] = await Promise.all(
     entries.items.map(async (entry) => {
       const title = entry.fields.title;
+      const slug = entry.fields.slug;
       const date = new Date(entry.fields.date);
       const description = entry.fields.description;
 
@@ -28,15 +29,9 @@ export async function getSortedPostsData(): Promise<Post[]> {
         .process(entry.fields.content);
       const contentHtml = processedContent.toString();
 
-      const year = date.getFullYear();
-      const month = date.getMonth() + 1;
-      const day = date.getDate();
-
       return {
-        year,
-        month,
-        day,
         title,
+        slug,
         date,
         description,
         contentHtml: contentHtml,
@@ -44,57 +39,35 @@ export async function getSortedPostsData(): Promise<Post[]> {
     })
   );
 
-  return allPostsData.sort((a, b) => {
-    if (a.date < b.date) {
-      return 1;
-    } else {
-      return -1;
-    }
-  });
+  return posts.sort((a, b) => (a.date < b.date ? 1 : -1));
 }
 
 export async function getAllPostIds(): Promise<PostDetailPageStaticPathType> {
   const items = await getSortedPostsData();
-  return items.map((item) => {
-    const year = item.year.toString();
-    const month = item.month.toString();
-    const day = item.day.toString();
-    return {
-      params: {
-        year,
-        month,
-        day,
-      },
-    };
-  });
+  return items.map((item) => ({
+    params: {
+      slug: item.slug,
+    },
+  }));
 }
 
-export async function getPostData(
-  year: number,
-  month: number,
-  day: number
-): Promise<PostDetailPageData> {
+export async function getPostData(slug: string): Promise<PostDetailPageData> {
   const posts = await getSortedPostsData();
-  const post = posts.find((post) => {
-    return post.year == year && post.month == month && post.day == day;
-  });
+  const post = posts.find((post) => post.slug === slug);
   const postDate = post.date;
-  const contentHtml = post.contentHtml;
-  const date = postDate;
   const title = post.title;
   const description = post.description;
+  const contentHtml = post.contentHtml;
   const postIndex = posts.findIndex((post) => post.date === postDate);
   const prevPost = postIndex + 1 in posts ? posts[postIndex + 1] : null;
   const nextPost = postIndex - 1 in posts ? posts[postIndex - 1] : null;
   return {
-    year,
-    month,
-    day,
     contentHtml,
     prevPost,
     nextPost,
-    date,
+    date: postDate,
     title,
     description,
+    slug,
   };
 }
