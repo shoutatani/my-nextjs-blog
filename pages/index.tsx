@@ -1,59 +1,55 @@
-import { Box, Column, Columns, Title } from "bloomer";
+import { Column, Columns, Title } from "bloomer";
 import { GetStaticProps } from "next";
 import Link from "next/link";
 import Biography from "../components/Biography";
+import { PostIndexPageData } from "../components/interface";
 import Layout from "../components/layout";
-import { getSortedPostsData } from "../lib/markdown_posts";
+import { getSortedPostsData } from "../lib/contentful_posts";
 
 export const getStaticProps: GetStaticProps = async () => {
-  const allPostsData = getSortedPostsData();
+  const posts = JSON.parse(JSON.stringify(await getSortedPostsData()));
   return {
     props: {
-      allPostsData,
+      posts,
     },
   };
 };
 
-export default function Home({
-  allPostsData,
-}: {
-  allPostsData: {
-    date: string;
-    title: string;
-    description: string;
-    year: string;
-    month: string;
-    day: string;
-  }[];
-}) {
+export default function Home({ posts }: { posts: PostIndexPageData }) {
   return (
     <Layout isHome>
       <Biography />
-      {allPostsData.map(({ year, month, day, date, title, description }) => 
-        <Link href="/[year]/[month]/[day]" as={`/${year}/${month}/${day}`} key={`${year}${month}${day}`}>
-          <Box tag="a">
-            <article>
-              <header>
-                <Columns isMobile={true}>
-                  <Column isSize={7}>
-                    <Title isSize={6}>{title}</Title>
-                  </Column>
-                  <Column isSize={5} style={{ textAlign: "right" }}>
-                    <small>{date}</small>
-                  </Column>
-                </Columns>
-              </header>
-              <section>
-                <p
-                  dangerouslySetInnerHTML={{
-                    __html: description,
-                  }}
-                />
-              </section>
-            </article>
-          </Box>
-        </Link>
-      )}
+      {posts.map(({ date, title, description, slug }) => {
+        const postDate: Date = new Date(date);
+        const formatDate = `${postDate.getFullYear()}/${
+          postDate.getMonth() + 1
+        }/${postDate.getDate()} ${postDate.getHours()}:${postDate.getMinutes()}`;
+        return (
+          <Link href={`/${slug}`} key={`${slug}`}>
+            <a className="box">
+              <article>
+                <header>
+                  <Columns isMobile={true}>
+                    <Column isSize={7}>
+                      <Title isSize={6}>{title}</Title>
+                    </Column>
+                    <Column isSize={5} style={{ textAlign: "right" }}>
+                      <small>{formatDate}</small>
+                    </Column>
+                  </Columns>
+                </header>
+                <section>
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html: description,
+                    }}
+                  />
+                </section>
+              </article>
+            </a>
+          </Link>
+        );
+      })}
       <hr />
     </Layout>
   );
