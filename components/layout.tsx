@@ -76,8 +76,7 @@ export default function Layout({
           <hr />
           <main>{children}</main>
           <footer>
-            © {new Date().getFullYear()}, テクノロジーで現世をSurviveするブログ
-            All Rights Reserved.
+            © {new Date().getFullYear()}, テクノロジーで現世をSurviveするブログ All Rights Reserved.
           </footer>
         </Column>
         <Column isHidden={"touch"}>
