@@ -6,6 +6,9 @@ import fs from "fs";
 import { getSortedPostsData } from "./contentful_posts";
 
 (async function () {
+
+  console.log("env=", process.env);
+
   const feed = new Feed({
     title: "テクノロジーで現世をSurviveするブログ",
     description:
