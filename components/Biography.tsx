@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Biography() {
   const author: string = "shoutatani"
   return (
@@ -26,12 +28,13 @@ export default function Biography() {
           <span>Ninja250とPENTAX K3-Ⅱをお供に安らかな日々を過ごしてます。</span>
         </p>
         <p style={{ marginBottom: 0 }}>
+          SNS Accounts:&nbsp;
           <a
             href={`https://twitter.com/${author}`}
             target="_blank"
             rel="noopener noreferrer"
           >
-            Twitterはこちら。
+            Twitter
           </a>
           {` `}
           <a
@@ -39,8 +42,10 @@ export default function Biography() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            GitHubはこちら。
+            GitHub
           </a>
+          &nbsp;
+          RSS Feeds: <Link href="/rss/2.0.xml"><a>RSS2.0</a></Link> <Link href="/rss/atom.xml"><a>Atom</a></Link>
         </p>
       </div>
     </div>
