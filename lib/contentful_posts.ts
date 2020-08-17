@@ -1,6 +1,6 @@
 import { ContentfulClientApi } from "contentful";
 import remark from "remark";
-import * as html from "remark-html";
+import html from "remark-html";
 import {
   ContentfulPostContentModel,
   Post,
