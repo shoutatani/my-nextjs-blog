@@ -1,9 +1,11 @@
-require("dotenv").config({ path: ".env.local" });
-require("dotenv").config({ path: ".env.production.local" });
 
+import { config } from "dotenv";
 import { Feed } from "feed";
 import fs from "fs";
 import { getSortedPostsData } from "./contentful_posts";
+
+config({ path: ".env.local" });
+config({ path: ".env.production.local" });
 
 (async function () {
 
