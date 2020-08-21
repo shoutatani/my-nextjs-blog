@@ -4,6 +4,7 @@ import { Feed } from "feed";
 import fs from "fs";
 import { getSortedPostsData } from "./contentful_posts";
 
+config({ path: ".env" });
 config({ path: ".env.local" });
 config({ path: ".env.production.local" });
 
@@ -47,10 +48,12 @@ config({ path: ".env.production.local" });
   });
   feed.addCategory("Technology");
 
-  fs.writeFileSync("public/rss/2.0.xml", new TextEncoder().encode(feed.rss2()));
+  const rss2 = feed.rss2().replace(/<\!\[CDATA\[/g, "").replace(/\]\]\>/g, "");
+  fs.writeFileSync("public/rss/2.0.xml", new TextEncoder().encode(rss2));
 
+  const atom1 = feed.atom1().replace(/<\!\[CDATA\[/g, "").replace(/\]\]\>/g, "");
   fs.writeFileSync(
     "public/rss/atom.xml",
-    new TextEncoder().encode(feed.atom1())
+    new TextEncoder().encode(atom1)
   );
 })();
