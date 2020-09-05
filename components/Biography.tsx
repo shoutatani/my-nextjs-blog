@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 export default function Biography() {
-  const author: string = "shoutatani"
+  const author: string = "shoutatani";
   return (
     <div
       style={{
@@ -44,8 +44,13 @@ export default function Biography() {
           >
             GitHub
           </a>
-          &nbsp;
-          RSS Feeds: <Link href="/rss/2.0.xml"><a>RSS2.0</a></Link> <Link href="/rss/atom.xml"><a>Atom</a></Link>
+          &nbsp; RSS Feeds:{" "}
+          <Link href="/rss/rss2.xml">
+            <a>RSS2.0</a>
+          </Link>{" "}
+          <Link href="/rss/atom.xml">
+            <a>Atom</a>
+          </Link>
         </p>
       </div>
     </div>
