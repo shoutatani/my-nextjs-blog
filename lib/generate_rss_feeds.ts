@@ -50,7 +50,7 @@ config({ path: ".env.production.local" });
     .rss2()
     .replace(/<\!\[CDATA\[/g, "")
     .replace(/\]\]\>/g, "");
-  fs.writeFileSync("public/rss/2.0.xml", new TextEncoder().encode(rss2));
+  fs.writeFileSync("public/rss/rss2.xml", new TextEncoder().encode(rss2));
 
   const atom1 = feed
     .atom1()
